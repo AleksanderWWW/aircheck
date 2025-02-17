@@ -9,7 +9,7 @@ authors = [
 requires-python = "<3.13"
 
 dependencies = [
-    "apache-airflow>=2.10.0",
+    "apache-airflow>=2.0.0",
     "click>=8.0.0",
 ]
 
