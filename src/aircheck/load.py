@@ -8,11 +8,8 @@ from airflow.models import DAG
 
 
 
-def load_dags(dag_dir: str | bytes| Path) -> list[DAG]:
+def load_dags(dag_modules: list[str | bytes| Path]) -> list[DAG]:
     dags = []
-
-    dag_path_glob = join(dag_dir, "**.py")
-    dag_modules = glob.glob(dag_path_glob)
 
     for module_path in dag_modules:
         module = load_module(module_path)
