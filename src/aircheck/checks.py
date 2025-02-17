@@ -1,5 +1,5 @@
-from airflow.models import DAG
 from airflow.exceptions import AirflowDagInconsistent, AirflowException
+from airflow.models import DAG
 
 
 class AirflowDuplicatedDagIdException(AirflowException):
@@ -22,7 +22,9 @@ def check_for_duplicated_dags(dags: list[DAG]) -> None:
 
 def check_dag_id_prefix(dag: DAG, expected_prefix: str) -> None:
     if not dag.dag_id.startswith(expected_prefix):
-        raise AirflowDagInconsistent(f"DAG {dag.dag_id} does not include required prefix {expected_prefix}")
+        raise AirflowDagInconsistent(
+            f"DAG {dag.dag_id} does not include required prefix {expected_prefix}"
+        )
 
 
 def check_for_whitespace_in_id(dag: DAG) -> None:

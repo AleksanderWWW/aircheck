@@ -1,7 +1,7 @@
 [project]
 name = "aircheck"
 version = "0.1.0"
-description = "Add your description here"
+description = "Pre-commit hook for airflow DAG integrity validation"
 readme = "README.md"
 authors = [
     { name = "Aleksander Wojnarowicz", email = "alwojnarowicz@gmail.com" }
@@ -17,6 +17,7 @@ dependencies = [
 dev = [
   "pytest",
   "pytest-cov",
+  "ruff",
 ]
 
 [project.scripts]
