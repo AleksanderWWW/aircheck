@@ -1,0 +1,27 @@
+[project]
+name = "aircheck"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Aleksander Wojnarowicz", email = "alwojnarowicz@gmail.com" }
+]
+requires-python = "<3.13"
+
+dependencies = [
+    "apache-airflow>=2.10.0",
+    "click>=8.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+]
+
+[project.scripts]
+aircheck = "aircheck.main:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
