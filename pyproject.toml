@@ -1,6 +1,6 @@
 [project]
 name = "aircheck"
-version = "v0.1.1"
+version = "v0.1.2"
 description = "Tool and pre-commit hook airflow DAG integrity validation"
 readme = "README.md"
 authors = [

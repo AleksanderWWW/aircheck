@@ -55,7 +55,7 @@ aircheck ./dags/dag1.py ./dags/dag2.py --check-whitespace --dag-id-prefix <prefi
 
 ```yaml
 - repo: https://github.com/AleksanderWWW/aircheck
-  rev: v0.1.0
+  rev: v0.1.2
   hooks:
     - id: aircheck
       args: ["--check-empty-dags", "--dag-path" "<non-standard path>"]
