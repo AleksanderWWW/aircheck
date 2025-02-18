@@ -1,4 +1,5 @@
 import pathlib
+import sys
 
 import click
 
@@ -24,12 +25,18 @@ def main(
     check_empty_dags: bool,
 ) -> None:
     """CLI entry point for DAG integrity validation."""
-    check_dags_integrity(
+    result = check_dags_integrity(
         files=files,
         dag_path=dag_path,
         dag_id_prefix=dag_id_prefix,
         check_empty_dags=check_empty_dags,
     )
+
+    if not result.check_successful:
+        click.echo(result.err_msg, err=True)
+        sys.exit(1)
+
+    click.echo("All DAG checks successful ✅")
 
 
 if __name__ == "__main__":
