@@ -8,6 +8,7 @@ The aim of the project is two-fold:
 - allow to enforce standards related to certain DAG properties.
 
 The first part involves:
+- checking if modules containing DAGs are properly loaded (i.e. no `ImportErrors` etc.)
 - checking for cycles in DAGs
 - checking for duplicated DAGs
 
@@ -47,7 +48,7 @@ After a successful installation, the project can be used in three main ways.
 ### Commandline tool
 
 ```bash
-aircheck ./dags/dag1.py ./dags/dag2.py --check-whitespace --check-prefix --dag-id-prefix <prefix>
+aircheck ./dags/dag1.py ./dags/dag2.py --check-whitespace --dag-id-prefix <prefix>
 ```
 
 ### Pre-commit hook
@@ -57,7 +58,7 @@ aircheck ./dags/dag1.py ./dags/dag2.py --check-whitespace --check-prefix --dag-i
   rev: v0.1.0
   hooks:
     - id: aircheck
-      args: ["--check-whitespace", "--check-empty-dags", "--dag-path" "<non-standard path>"]
+      args: ["--check-empty-dags", "--dag-path" "<non-standard path>"]
 ```
 
 ### Python package
