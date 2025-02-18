@@ -60,7 +60,7 @@ aircheck ./dags/dag1.py ./dags/dag2.py --check-whitespace --dag-id-prefix <prefi
   rev: v0.1.2
   hooks:
     - id: aircheck
-      args: ["--check-empty-dags", "--dag-path" "<non-standard path>"]
+      args: ["--check-empty-dags", "--dag-path", "<non-standard path>"]
 ```
 
 ### Python package
