@@ -1,9 +1,9 @@
 __all__ = ("check_dags_integrity",)
 
-from airflow.utils.dag_cycle_tester import check_cycle
-
 from aircheck.core.checks import (
+    CheckResult,
     check_dag_id_prefix,
+    check_for_cycle,
     check_for_duplicated_dags,
     check_for_empty_dag,
 )
@@ -16,16 +16,26 @@ def check_dags_integrity(
     dag_path: str,
     dag_id_prefix: str,
     check_empty_dags: bool,
-) -> None:
+) -> CheckResult:
     dags = load_dags(dag_modules=get_dag_modules(dag_path, files))
 
-    check_for_duplicated_dags(dags)
+    result = check_for_duplicated_dags(dags)
+    if not result.check_successful:
+        return result
 
     for dag in dags:
-        check_cycle(dag)
+        result = check_for_cycle(dag)
+        if not result.check_successful:
+            return result
 
         if dag_id_prefix:
-            check_dag_id_prefix(dag, dag_id_prefix)
+            result = check_dag_id_prefix(dag, dag_id_prefix)
+            if not result.check_successful:
+                return result
 
         if check_empty_dags:
-            check_for_empty_dag(dag)
+            result = check_for_empty_dag(dag)
+            if not result.check_successful:
+                return result
+
+    return result
