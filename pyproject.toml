@@ -1,7 +1,7 @@
 [project]
 name = "aircheck"
-version = "0.1.0rc0"
-description = "Pre-commit hook for airflow DAG integrity validation"
+version = "v0.1.0"
+description = "Tool and pre-commit hook airflow DAG integrity validation"
 readme = "README.md"
 authors = [
     { name = "Aleksander Wojnarowicz", email = "alwojnarowicz@gmail.com" }

@@ -1,0 +1,17 @@
+---
+name: Test
+description: Run tests based on the input mark
+inputs:
+  working_directory:
+    description: 'Working directory'
+    required: false
+    default: .
+  mark:
+    description: 'Pytest mark'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Run ${{ inputs.mark }} tests
+      run: pytest -v -m ${{ inputs.mark }} tests/
+      shell: bash

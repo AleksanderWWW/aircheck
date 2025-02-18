@@ -1,0 +1,39 @@
+name: ci-tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  ci-tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.10", "3.12" ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build
+        uses: ./.github/actions/build
+
+#      - name: Unit Tests
+#        uses: ./.github/actions/test
+#        with:
+#          mark: 'unit'
+
+      - name: Integration Tests
+        uses: ./.github/actions/test
+        with:
+          mark: 'integration'

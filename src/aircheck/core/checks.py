@@ -27,11 +27,6 @@ def check_dag_id_prefix(dag: DAG, expected_prefix: str) -> None:
         )
 
 
-def check_for_whitespace_in_id(dag: DAG) -> None:
-    if " " in dag.dag_id:
-        raise AirflowDagInconsistent(f"DAG {dag.dag_id} must not contain whitespaces")
-
-
 def check_for_empty_dag(dag: DAG) -> None:
     if not dag.tasks:
         raise AirflowDagInconsistent(f"DAG {dag.dag_id} must have at least one task")
