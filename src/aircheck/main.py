@@ -1,16 +1,8 @@
 import pathlib
 
 import click
-from airflow.utils.dag_cycle_tester import check_cycle
 
-from aircheck.checks import (
-    check_dag_id_prefix,
-    check_for_duplicated_dags,
-    check_for_empty_dag,
-    check_for_whitespace_in_id,
-)
-from aircheck.load import load_dags
-from aircheck.utils import get_dag_modules
+from aircheck.integrity_check import check_dags_integrity
 
 DEFAULT_DAG_PATH = str(pathlib.Path.cwd() / "dags")
 
@@ -34,22 +26,15 @@ def main(
     check_whitespace: bool,
     check_empty_dags: bool,
 ) -> None:
-    """CLI entry point for DAG validation."""
-    dags = load_dags(dag_modules=get_dag_modules(dag_path, files))
-
-    check_for_duplicated_dags(dags)
-
-    for dag in dags:
-        check_cycle(dag)
-
-        if check_prefix:
-            check_dag_id_prefix(dag, dag_id_prefix)
-
-        if check_whitespace:
-            check_for_whitespace_in_id(dag)
-
-        if check_empty_dags:
-            check_for_empty_dag(dag)
+    """CLI entry point for DAG integrity validation."""
+    check_dags_integrity(
+        files=files,
+        dag_path=dag_path,
+        check_prefix=check_prefix,
+        dag_id_prefix=dag_id_prefix,
+        check_whitespace=check_whitespace,
+        check_empty_dags=check_empty_dags,
+    )
 
 
 if __name__ == "__main__":
