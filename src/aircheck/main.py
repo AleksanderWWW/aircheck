@@ -17,11 +17,17 @@ DEFAULT_DAG_PATH = str(pathlib.Path.cwd() / "dags")
     help="Path where DAG files are",
 )
 @click.option("--dag-id-prefix", default="", help="DAG ID prefix to enforce.")
+@click.option(
+    "--check-deprecated_params",
+    is_flag=True,
+    help="Check for deprecated params DAG definitions.",
+)
 @click.option("--check-empty-dags", is_flag=True, help="Check for empty DAGs.")
 def main(
     files: list[str],
     dag_path: str,
     dag_id_prefix: str,
+    check_deprecated_params: bool,
     check_empty_dags: bool,
 ) -> None:
     """CLI entry point for DAG integrity validation."""
@@ -29,6 +35,7 @@ def main(
         files=files,
         dag_path=dag_path,
         dag_id_prefix=dag_id_prefix,
+        check_deprecated_params=check_deprecated_params,
         check_empty_dags=check_empty_dags,
     )
 
