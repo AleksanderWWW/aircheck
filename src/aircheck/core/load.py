@@ -1,27 +1,71 @@
-import importlib.util
-from pathlib import Path
-from types import ModuleType
+__all__ = ("get_dag_ids", "get_dags_from_dagbag")
 
-from airflow.models import DAG
+import ast
+import pathlib
+from _ast import stmt
+from typing import TYPE_CHECKING
+
+from aircheck.core.exceptions import DAGIDNotPresent, DeprecatedParamsFound
+from aircheck.core.parse import parse_module
+from aircheck.core.utils import get_dag_modules
+
+if TYPE_CHECKING:
+    from airflow.models import DAG
 
 
-def load_dags(dag_modules: list[str | bytes | Path]) -> list[DAG]:
-    dags = []
+def get_dag_ids(
+    dag_path: str, files: list[str], check_deprecated_params: bool
+) -> list[str]:
+    dags: list[str] = []
 
-    for module_path in dag_modules:
-        module = load_module(module_path)
-        dags += [var for var in vars(module).values() if isinstance(var, DAG)]
+    for module in get_dag_modules(dag_path, files):
+        mb = get_module_body(module)
+
+        parsed = parse_module(mb)
+
+        dags += get_dag_ids_in_module(parsed.dag_stmts, check_deprecated_params)
 
     return dags
 
 
-def load_module(module_path: str | bytes | Path) -> ModuleType:
-    module_path = Path(module_path)
+def get_module_body(module_path: str | bytes | pathlib.Path) -> list[stmt]:
+    with open(module_path, "r", encoding="utf-8") as fp:
+        return ast.parse(fp.read()).body
 
-    module_name = module_path.name
 
-    mod_spec = importlib.util.spec_from_file_location(module_name, module_path)
-    module = importlib.util.module_from_spec(mod_spec)
-    mod_spec.loader.exec_module(module)
+def get_dag_ids_in_module(
+    dag_stmts: list[ast.With], check_deprecated_params: bool
+) -> list[str]:
+    return [
+        get_dag_id_from_dag_stmt(dag_stmt, check_deprecated_params)
+        for dag_stmt in dag_stmts
+    ]
 
-    return module
+
+def get_dag_id_from_dag_stmt(dag_stmt: ast.With, check_deprecated_params: bool) -> str:
+    keywords = dag_stmt.items[0].context_expr.keywords
+
+    try:
+        dag_id = next(kw.value.value for kw in keywords if kw.arg == "dag_id")
+    except StopIteration:
+        args = dag_stmt.items[0].context_expr.args
+        if not args:
+            raise DAGIDNotPresent(dag_id="", lineno=dag_stmt.lineno)
+
+        dag_id = args[0].value
+
+    if check_deprecated_params:
+        deprecated = [kw.arg for kw in keywords if kw.arg in ("schedule_interval",)]
+        if deprecated:
+            raise DeprecatedParamsFound(
+                dag_id, dag_stmt.lineno, deprecated_params=deprecated
+            )
+    return dag_id
+
+
+def get_dags_from_dagbag(dag_path: str, dag_ids: set[str]) -> list["DAG"]:
+    from airflow.models import DagBag
+
+    dagbag = DagBag(dag_folder=dag_path, safe_mode=True, include_examples=False)
+
+    return [dag for dag in dagbag.dags.values() if dag.dag_id in dag_ids]
