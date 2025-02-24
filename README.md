@@ -69,9 +69,15 @@ aircheck ./dags/dag1.py ./dags/dag2.py --check-whitespace --dag-id-prefix <prefi
 from aircheck.core.checks import check_for_duplicated_dags, check_for_empty_dag
 from aircheck.core.load import load_dags
 
-dags = load_dags(["./dags/dag1.py", "./dags/dag2.py"])
+dag_info = load_dags(dag_path="dag_folder/dags")
 
-check_for_duplicated_dags(dags)
+if dag_info.import_errors:
+    # handle import errors
+    ...
+
+dags = dag_info.dags
+dag_ids = dag_info.dag_ids
+check_for_duplicated_dags(dag_ids)
 
 for dag in dags:
     check_for_empty_dag(dag)
@@ -87,4 +93,5 @@ for dag in dags:
 
 **Notes**
 - if the files provided to the command are not present in the `--dag-path`, they will be ignored
-- when the `--dag-id-prefix` is left as default, then this part of the hook will always succeed.
+- when the `--dag-id-prefix` is left as default, then this part of the hook will always succeed
+- in case your DAG files have additional dependencies, see [this guide](https://pre-commit.com/#config-additional_dependencies).
