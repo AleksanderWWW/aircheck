@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from airflow import DAG
+from airflow.models import Variable
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 
@@ -20,6 +21,7 @@ with DAG(
     schedule="@daily",
     catchup=False,
 ) as dag1:
+    Variable.get("env")
     start = EmptyOperator(task_id="start")
 
     def print_hello():
