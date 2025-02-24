@@ -20,6 +20,8 @@ def check_dags_integrity(
 ) -> CheckResult:
     dag_modules = get_dag_modules(dag_path, files)
 
+    del files  # no need to keep them anymore and in case of `pre-commit run --all-files` this could get big
+
     if not dag_modules:
         # no changes made to DAGs - no need to run integrity check
         return CheckResult(check_successful=True)
