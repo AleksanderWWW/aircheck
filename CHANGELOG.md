@@ -1,3 +1,6 @@
+## [UNRELEASED] aircheck v0.2.0
+- Use DagBag to make dag parsing more robust ([#4](https://github.com/AleksanderWWW/aircheck/pull/4))
+
 ## aircheck v0.1.1
 
 ### Fixes

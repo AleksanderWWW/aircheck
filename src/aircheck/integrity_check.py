@@ -1,9 +1,10 @@
 __all__ = ("check_dags_integrity",)
 
+from airflow.exceptions import AirflowDagCycleException
+
 from aircheck.core.checks import (
     CheckResult,
     check_dag_id_prefix,
-    check_for_cycle,
     check_for_duplicated_dags,
     check_for_empty_dag,
 )
@@ -17,22 +18,30 @@ def check_dags_integrity(
     dag_id_prefix: str,
     check_empty_dags: bool,
 ) -> CheckResult:
-    dags = load_dags(dag_modules=get_dag_modules(dag_path, files))
+    dag_modules = get_dag_modules(dag_path, files)
 
-    result = check_for_duplicated_dags(dags)
+    del files  # no need to keep them anymore and in case of `pre-commit run --all-files` this could get big
+
+    if not dag_modules:
+        # no changes made to DAGs - no need to run integrity check
+        return CheckResult(check_successful=True)
+
+    dag_info = load_dags(dag_path=dag_path)
+    if dag_info.import_errors:
+        errors = [f"{err.file}: {err.msg}" for err in dag_info.import_errors]
+        err_msg = """\n""".join(errors)
+        return CheckResult(False, err_msg=err_msg)
+
+    result = check_for_duplicated_dags(dag_info.dag_ids)
     if not result.check_successful:
         return result
 
-    for dag in dags:
-        result = check_for_cycle(dag)
+    if dag_id_prefix:
+        result = check_dag_id_prefix(dag_info.dag_ids, dag_id_prefix)
         if not result.check_successful:
             return result
 
-        if dag_id_prefix:
-            result = check_dag_id_prefix(dag, dag_id_prefix)
-            if not result.check_successful:
-                return result
-
+    for dag in dag_info.dags:
         if check_empty_dags:
             result = check_for_empty_dag(dag)
             if not result.check_successful:
