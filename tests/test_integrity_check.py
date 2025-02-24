@@ -9,10 +9,10 @@ from aircheck.integrity_check import check_dags_integrity
 @pytest.mark.integration
 class TestCheckDagsIntegrity:
     def _run_integrity(self, dag_path: Path, filename: str) -> CheckResult:
-        path = dag_path / filename
+        path = dag_path / filename.strip(".py") / filename
         return check_dags_integrity(
             files=[str(path)],
-            dag_path=str(dag_path),
+            dag_path=str(dag_path / filename.strip(".py")),
             dag_id_prefix="ABC",
             check_empty_dags=True,
         )

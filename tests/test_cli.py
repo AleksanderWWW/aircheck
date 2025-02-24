@@ -12,9 +12,9 @@ def test_successful_cli_invoke(dag_path: Path):
     result = runner.invoke(
         main,
         [
-            str(dag_path / "correct_dags.py"),
+            str(dag_path / "correct_dags" / "correct_dags.py"),
             "--dag-path",
-            str(dag_path),
+            str(dag_path / "correct_dags"),
             "--check-empty-dags",
             "--dag-id-prefix",
             "ABC",
@@ -33,9 +33,9 @@ def test_failing_cli_invoke(dag_path: Path, filename: str):
     result = runner.invoke(
         main,
         [
-            str(dag_path / filename),
+            str(dag_path / filename.strip(".py") / filename),
             "--dag-path",
-            str(dag_path),
+            str(dag_path / filename.strip(".py")),
             "--check-empty-dags",
             "--dag-id-prefix",
             "ABC",
