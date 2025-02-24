@@ -5,9 +5,10 @@ __all__ = (
     "CheckResult",
 )
 
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
-from airflow.models import DAG
+if TYPE_CHECKING:
+    from airflow.models import DAG
 
 
 class CheckResult(NamedTuple):
@@ -38,7 +39,7 @@ def check_dag_id_prefix(dag_ids: list[str], expected_prefix: str) -> CheckResult
     return CheckResult(check_successful=True)
 
 
-def check_for_empty_dag(dag: DAG) -> CheckResult:
+def check_for_empty_dag(dag: "DAG") -> CheckResult:
     if not dag.tasks:
         return CheckResult(
             False, err_msg=f"DAG '{dag.dag_id}' must have at least one task"

@@ -1,7 +1,5 @@
 __all__ = ("check_dags_integrity",)
 
-from airflow.exceptions import AirflowDagCycleException
-
 from aircheck.core.checks import (
     CheckResult,
     check_dag_id_prefix,
