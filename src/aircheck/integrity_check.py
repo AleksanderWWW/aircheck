@@ -1,17 +1,12 @@
 __all__ = ("check_dags_integrity",)
 
-from typing import TYPE_CHECKING
-
 from aircheck.core.checks.check_result import CheckResult
 from aircheck.core.checks.static_checks import (
     check_dag_id_prefix,
     check_for_duplicated_dags,
 )
 from aircheck.core.exceptions import DAGIDNotPresent, DeprecatedParamsFound
-from aircheck.core.load import get_dag_ids, get_dags_from_dagbag
-
-if TYPE_CHECKING:
-    from airflow.models import DAG
+from aircheck.core.load import get_dag_ids
 
 
 def check_dags_integrity(
@@ -30,9 +25,7 @@ def check_dags_integrity(
     if not result.check_successful:
         return result
 
-    dag_objs = get_dags_from_dagbag(dag_path, set(dag_ids))
-
-    return run_dynamic_checks(dags=dag_objs, check_empty_dags=check_empty_dags)
+    return CheckResult(check_successful=True)
 
 
 def run_static_checks(dag_ids: list[str], dag_id_prefix: str) -> CheckResult:
@@ -43,22 +36,6 @@ def run_static_checks(dag_ids: list[str], dag_id_prefix: str) -> CheckResult:
     for dag_id in dag_ids:
         if dag_id_prefix:
             result = check_dag_id_prefix(dag_id, dag_id_prefix)
-            if not result.check_successful:
-                return result
-
-    return CheckResult(check_successful=True)
-
-
-def run_dynamic_checks(dags: list["DAG"], check_empty_dags: bool) -> CheckResult:
-    from aircheck.core.checks.dynamic_checks import check_for_cycle, check_for_empty_dag
-
-    for dag in dags:
-        result = check_for_cycle(dag)
-        if not result.check_successful:
-            return result
-
-        if check_empty_dags:
-            result = check_for_empty_dag(dag)
             if not result.check_successful:
                 return result
 

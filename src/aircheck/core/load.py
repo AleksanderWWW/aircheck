@@ -1,23 +1,18 @@
-__all__ = ("get_dag_ids", "get_dags_from_dagbag")
+__all__ = ("get_dag_ids",)
 
 import ast
 import pathlib
 from _ast import stmt
-from typing import TYPE_CHECKING
 
 from aircheck.core.exceptions import DAGIDNotPresent, DeprecatedParamsFound
 from aircheck.core.parse import parse_module
 from aircheck.core.utils import get_dag_modules
-
-if TYPE_CHECKING:
-    from airflow.models import DAG
 
 
 def get_dag_ids(
     dag_path: str, files: list[str], check_deprecated_params: bool
 ) -> list[str]:
     dags: list[str] = []
-
     for module in get_dag_modules(dag_path, files):
         mb = get_module_body(module)
 
@@ -61,11 +56,3 @@ def get_dag_id_from_dag_stmt(dag_stmt: ast.With, check_deprecated_params: bool) 
                 dag_id, dag_stmt.lineno, deprecated_params=deprecated
             )
     return dag_id
-
-
-def get_dags_from_dagbag(dag_path: str, dag_ids: set[str]) -> list["DAG"]:
-    from airflow.models import DagBag
-
-    dagbag = DagBag(dag_folder=dag_path, safe_mode=True, include_examples=False)
-
-    return [dag for dag in dagbag.dags.values() if dag.dag_id in dag_ids]

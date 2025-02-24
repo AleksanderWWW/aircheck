@@ -17,7 +17,7 @@ def check_dag_id_prefix(dag_id: str, expected_prefix: str) -> CheckResult:
     if not dag_id.startswith(expected_prefix):
         return CheckResult(
             False,
-            err_msg=f"DAG '{dag_id}' does not include required prefix {expected_prefix}",
+            err_msg=f"DAG '{dag_id}' does not include required prefix '{expected_prefix}'",
         )
 
     return CheckResult(check_successful=True)

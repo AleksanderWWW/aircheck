@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from aircheck.core.checks import CheckResult
+from aircheck.core.checks.dynamic_checks import CheckResult
 from aircheck.integrity_check import check_dags_integrity
 
 

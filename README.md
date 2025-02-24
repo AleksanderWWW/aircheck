@@ -64,7 +64,7 @@ aircheck ./dags/dag1.py ./dags/dag2.py --check-whitespace --dag-id-prefix <prefi
 ### Python package
 
 ```python
-from aircheck.core.checks import check_for_duplicated_dags, check_for_empty_dag
+from aircheck.core.checks.dynamic_checks import check_for_duplicated_dags, check_for_empty_dag
 from aircheck.core.load import load_dags
 
 dags = load_dags(["./dags/dag1.py", "./dags/dag2.py"])

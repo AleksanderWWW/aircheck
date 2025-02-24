@@ -18,7 +18,7 @@ DEFAULT_DAG_PATH = str(pathlib.Path.cwd() / "dags")
 )
 @click.option("--dag-id-prefix", default="", help="DAG ID prefix to enforce.")
 @click.option(
-    "--check-deprecated_params",
+    "--check-deprecated-params",
     is_flag=True,
     help="Check for deprecated params DAG definitions.",
 )
@@ -40,7 +40,7 @@ def main(
     )
 
     if not result.check_successful:
-        click.echo(result.err_msg, err=True)
+        click.echo("❌  " + result.err_msg, err=True, color=True)
         sys.exit(1)
 
     click.echo("All DAG checks successful ✅")
