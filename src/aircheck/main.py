@@ -33,6 +33,7 @@ def main(
     )
 
     if not result.check_successful:
+        click.echo("Checks failed ❌")
         click.echo(result.err_msg, err=True)
         sys.exit(1)
 
