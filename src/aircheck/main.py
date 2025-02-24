@@ -33,11 +33,9 @@ def main(
     )
 
     if not result.check_successful:
-        click.echo("Checks failed ❌")
-        click.echo(result.err_msg, err=True)
+        click.echo("[AIRCHECK] Checks failed!")
+        click.echo("Error: " + result.err_msg, err=True)
         sys.exit(1)
-
-    click.echo("All DAG checks successful ✅")
 
 
 if __name__ == "__main__":
