@@ -48,7 +48,7 @@ def check_dags_integrity(
                 return result
 
         if check_dangling_tasks:
-            check_for_dangling_tasks(dag)
+            result = check_for_dangling_tasks(dag)
             if not result.check_successful:
                 return result
 

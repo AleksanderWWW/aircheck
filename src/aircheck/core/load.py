@@ -43,7 +43,6 @@ def load_dags(dag_path: str) -> DAGInfo:
     dag_objects = [dag for dag in dagbag.dags.values()]
 
     stats = dagbag.dagbag_stats[0]
-    breakpoint()
 
     dag_ids = _parse_str_list(stats.dags)
 
