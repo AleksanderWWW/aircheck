@@ -27,6 +27,8 @@ def check_dags_integrity(
             # no changes made to DAGs - no need to run integrity check
             return CheckResult(check_successful=True)
 
+    errors: list[str] = []
+
     dag_info = load_dags(dag_path=dag_path)
     if dag_info.import_errors:
         errors = [f"{err.file}: {err.msg}" for err in dag_info.import_errors]
@@ -35,22 +37,25 @@ def check_dags_integrity(
 
     result = check_for_duplicated_dags(dag_info.dag_ids)
     if not result.check_successful:
-        return result
+        errors.append(result.err_msg)
 
     for dag in dag_info.dags:
         if dag_id_prefix:
             result = check_dag_id_prefix(dag, dag_id_prefix)
             if not result.check_successful:
-                return result
+                errors.append(result.err_msg)
 
         if check_empty_dags:
             result = check_for_empty_dag(dag)
             if not result.check_successful:
-                return result
+                errors.append(result.err_msg)
 
         if check_dangling_tasks:
             result = check_for_dangling_tasks(dag)
             if not result.check_successful:
-                return result
+                errors.append(result.err_msg)
+
+    if errors:
+        result = CheckResult(check_successful=False, err_msg="""\n""".join(errors))
 
     return result
