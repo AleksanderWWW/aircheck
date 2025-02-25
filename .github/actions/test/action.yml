@@ -13,5 +13,5 @@ runs:
   using: "composite"
   steps:
     - name: Run ${{ inputs.mark }} tests
-      run: pytest -s -v -m ${{ inputs.mark }} tests/
+      run: pytest -v -m ${{ inputs.mark }} tests/
       shell: bash

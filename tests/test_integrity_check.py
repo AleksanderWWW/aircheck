@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import pytest
@@ -34,6 +35,10 @@ class TestCheckDagsIntegrity:
     def test_empty_dags(self, dag_path):
         assert not self._run_integrity(dag_path, "empty_dags.py").check_successful
 
+    @pytest.mark.skipif(
+        sys.platform == "win32",
+        reason="Windows is anyway not supported and it behaves strangely",
+    )
     def test_duplicated_dags(self, dag_path):
         assert not self._run_integrity(dag_path, "duplicated_dags.py").check_successful
 
