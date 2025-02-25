@@ -3,6 +3,7 @@ __all__ = ("check_dags_integrity",)
 from aircheck.core.checks import (
     CheckResult,
     check_dag_id_prefix,
+    check_for_dangling_tasks,
     check_for_duplicated_dags,
     check_for_empty_dag,
 )
@@ -15,6 +16,7 @@ def check_dags_integrity(
     dag_path: str,
     dag_id_prefix: str,
     check_empty_dags: bool,
+    check_dangling_tasks: bool,
 ) -> CheckResult:
     dag_modules = get_dag_modules(dag_path, files)
 
@@ -42,6 +44,11 @@ def check_dags_integrity(
     for dag in dag_info.dags:
         if check_empty_dags:
             result = check_for_empty_dag(dag)
+            if not result.check_successful:
+                return result
+
+        if check_dangling_tasks:
+            check_for_dangling_tasks(dag)
             if not result.check_successful:
                 return result
 

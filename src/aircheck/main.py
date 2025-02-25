@@ -18,11 +18,15 @@ DEFAULT_DAG_PATH = str(pathlib.Path.cwd() / "dags")
 )
 @click.option("--dag-id-prefix", default="", help="DAG ID prefix to enforce.")
 @click.option("--check-empty-dags", is_flag=True, help="Check for empty DAGs.")
+@click.option(
+    "--check-dangling-tasks", is_flag=True, help="Check for dangling tasks in DAGs."
+)
 def main(
     files: list[str],
     dag_path: str,
     dag_id_prefix: str,
     check_empty_dags: bool,
+    check_dangling_tasks: bool,
 ) -> None:
     """CLI entry point for DAG integrity validation."""
     result = check_dags_integrity(
@@ -30,6 +34,7 @@ def main(
         dag_path=dag_path,
         dag_id_prefix=dag_id_prefix,
         check_empty_dags=check_empty_dags,
+        check_dangling_tasks=check_dangling_tasks,
     )
 
     if not result.check_successful:

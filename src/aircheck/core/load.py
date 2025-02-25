@@ -26,6 +26,8 @@ def load_dags(dag_path: str) -> DAGInfo:
     if dagbag.import_errors:
         import_errors = []
         for k, v in dagbag.import_errors.items():
+            if v.startswith("Traceback (most recent call last)"):
+                v = v.split("\n")[-2]
             import_errors.append(
                 DAGImportError(
                     file=k,
@@ -41,6 +43,7 @@ def load_dags(dag_path: str) -> DAGInfo:
     dag_objects = [dag for dag in dagbag.dags.values()]
 
     stats = dagbag.dagbag_stats[0]
+    breakpoint()
 
     dag_ids = _parse_str_list(stats.dags)
 
