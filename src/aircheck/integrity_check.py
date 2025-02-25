@@ -18,13 +18,14 @@ def check_dags_integrity(
     check_empty_dags: bool,
     check_dangling_tasks: bool,
 ) -> CheckResult:
-    dag_modules = get_dag_modules(dag_path, files)
+    if files:
+        dag_modules = get_dag_modules(dag_path, files)
 
-    del files  # no need to keep them anymore and in case of `pre-commit run --all-files` this could get big
+        del files
 
-    if not dag_modules:
-        # no changes made to DAGs - no need to run integrity check
-        return CheckResult(check_successful=True)
+        if not dag_modules:
+            # no changes made to DAGs - no need to run integrity check
+            return CheckResult(check_successful=True)
 
     dag_info = load_dags(dag_path=dag_path)
     if dag_info.import_errors:
@@ -36,12 +37,12 @@ def check_dags_integrity(
     if not result.check_successful:
         return result
 
-    if dag_id_prefix:
-        result = check_dag_id_prefix(dag_info.dag_ids, dag_id_prefix)
-        if not result.check_successful:
-            return result
-
     for dag in dag_info.dags:
+        if dag_id_prefix:
+            result = check_dag_id_prefix(dag, dag_id_prefix)
+            if not result.check_successful:
+                return result
+
         if check_empty_dags:
             result = check_for_empty_dag(dag)
             if not result.check_successful:

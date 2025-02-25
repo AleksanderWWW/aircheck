@@ -39,7 +39,7 @@ def main(
 
     if not result.check_successful:
         click.echo("[AIRCHECK] Checks failed!")
-        click.echo("Error: " + result.err_msg, err=True)
+        click.echo(result.err_msg, err=True)
         sys.exit(1)
 
 
