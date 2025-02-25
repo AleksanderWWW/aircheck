@@ -19,7 +19,7 @@ class CheckResult(NamedTuple):
 
 def check_for_duplicated_dags(dag_ids: list[str]) -> CheckResult:
     seen = set()
-
+    print(dag_ids)
     for dag in dag_ids:
         if dag in seen:
             return CheckResult(False, err_msg=f"DAG '{dag}' has duplicates")
