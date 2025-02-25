@@ -90,7 +90,7 @@ for dag in dags:
 | `--dag-path`             | `str`  | Path to the DAG folder. Default: `./dags`                                   |
 | `--dag-id-prefix`        | `str`  | Prefix that all DAG ids should have for the check to succeed. Default: `""` |
 | `--check-empty-dags`     | `flag` | Pass to fail for DAGs with no tasks                                         |
-| `--check_dangling_tasks` | `flag` | Pass to fail for DAGs with tasks that have no dependencies                  |
+| `--check-dangling-tasks` | `flag` | Pass to fail for DAGs with tasks that have no dependencies                  |
 
 **Notes**
 - if the files provided to the command are not present in the `--dag-path`, they will be ignored
