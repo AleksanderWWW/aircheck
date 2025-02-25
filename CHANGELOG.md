@@ -1,5 +1,10 @@
 ## [UNRELEASED] aircheck v0.2.0
+
+### Enhancements
 - Use DagBag to make dag parsing more robust ([#4](https://github.com/AleksanderWWW/aircheck/pull/4))
+
+### Features
+-  Add flag to check for dangling tasks in DAGs ([#7](https://github.com/AleksanderWWW/aircheck/pull/7))
 
 ## aircheck v0.1.1
 

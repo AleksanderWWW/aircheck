@@ -2,6 +2,7 @@ __all__ = (
     "check_for_duplicated_dags",
     "check_dag_id_prefix",
     "check_for_empty_dag",
+    "check_for_dangling_tasks",
     "CheckResult",
 )
 
@@ -44,4 +45,15 @@ def check_for_empty_dag(dag: "DAG") -> CheckResult:
         return CheckResult(
             False, err_msg=f"DAG '{dag.dag_id}' must have at least one task"
         )
+    return CheckResult(check_successful=True)
+
+
+def check_for_dangling_tasks(dag: "DAG") -> CheckResult:
+    for task in dag.tasks:
+        if not task.upstream_list and not task.downstream_list:
+            return CheckResult(
+                False,
+                err_msg=f"Dangling task '{task.task_id}' in DAG '{dag.dag_id}' (no upstream or downstream dependencies)",
+            )
+
     return CheckResult(check_successful=True)

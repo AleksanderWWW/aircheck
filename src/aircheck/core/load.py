@@ -26,6 +26,8 @@ def load_dags(dag_path: str) -> DAGInfo:
     if dagbag.import_errors:
         import_errors = []
         for k, v in dagbag.import_errors.items():
+            if v.startswith("Traceback (most recent call last)"):
+                v = v.split("\n")[-2]
             import_errors.append(
                 DAGImportError(
                     file=k,

@@ -10,12 +10,14 @@ The aim of the project is two-fold:
 The first part involves:
 - checking if modules containing DAGs are properly loaded (i.e. no `ImportErrors` etc.)
 - checking for cycles in DAGs
-- checking for duplicated DAGs
+- checking for duplicated DAG ids
+- checking for duplicated task ids within a DAG
 
 The latter allows users to enforce that:
 - all DAGs have IDs starting with a certain prefix (e.g. indicating the team developing the DAG)
 - DAG IDs don't contain whitespaces (those can confuse the airflow UI)
 - every DAG has at least one task associated with it (i.e. there are no 'empty' DAGs).
+- tasks in DAGs are not dangling (i.e. they have at least one down- or upstream dependency)
 
 ## Installation
 
@@ -85,11 +87,12 @@ for dag in dags:
 
 ### Arguments
 
-| Name                 | Type   | Description                                                                 |
-|----------------------|--------|-----------------------------------------------------------------------------|
-| `--dag-path`         | `str`  | Path to the DAG folder. Default: `./dags`                                   |
-| `--dag-id-prefix`    | `str`  | Prefix that all DAG ids should have for the check to succeed. Default: `""` |
-| `--check-empty-dags` | `flag` | Pass to fail for DAGs with no tasks                                         |
+| Name                     | Type   | Description                                                                 |
+|--------------------------|--------|-----------------------------------------------------------------------------|
+| `--dag-path`             | `str`  | Path to the DAG folder. Default: `./dags`                                   |
+| `--dag-id-prefix`        | `str`  | Prefix that all DAG ids should have for the check to succeed. Default: `""` |
+| `--check-empty-dags`     | `flag` | Pass to fail for DAGs with no tasks                                         |
+| `--check-dangling-tasks` | `flag` | Pass to fail for DAGs with tasks that have no dependencies                  |
 
 **Notes**
 - if the files provided to the command are not present in the `--dag-path`, they will be ignored
