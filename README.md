@@ -2,6 +2,10 @@
 
 A tool for airflow DAG integrity validation.
 
+## Motivation
+The process in which a locally developed DAG is picked up, parsed and validated by the `airflow` instance can often be lengthy. So is the feedback cycle, which can be especially frustrating in case mistakes are made in the development phase.
+This tool can make it much, much shorter and therefore more efficient - why wait possibly hours to see your DAG have cycle errors in the UI, when you could see that even before you commit to the repository?
+
 The aim of the project is two-fold:
 
 - enable the users to run checks that would fail locally, before they fail in the airflow UI
