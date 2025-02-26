@@ -42,15 +42,18 @@ def load_dags(dag_path: str) -> DAGInfo:
 
     dag_objects = [dag for dag in dagbag.dags.values()]
 
-    stats = dagbag.dagbag_stats[0]
-
-    dag_ids = _parse_str_list(stats.dags)
+    dag_ids = []
+    for stats in dagbag.dagbag_stats:
+        dag_ids += _parse_str_list(stats.dags)
 
     return DAGInfo(dags=dag_objects, dag_ids=dag_ids, import_errors=[])
 
 
 def _parse_str_list(str_list: str) -> list[str]:
     str_list = str_list[1:-1]  # remove the '[' and ']' at the beginning and end
+    if not str_list:
+        return []
+
     ids = str_list.replace("'", "").split(",")
 
     for idx in range(1, len(ids)):

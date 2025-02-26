@@ -2,6 +2,7 @@
 
 ### Enhancements
 - Use DagBag to make dag parsing more robust ([#4](https://github.com/AleksanderWWW/aircheck/pull/4))
+- Accumulate errors instead of failing fast (apart from DagBag import errors) ([#8](https://github.com/AleksanderWWW/aircheck/pull/8))
 
 ### Features
 -  Add flag to check for dangling tasks in DAGs ([#7](https://github.com/AleksanderWWW/aircheck/pull/7))
