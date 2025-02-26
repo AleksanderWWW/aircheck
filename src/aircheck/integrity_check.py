@@ -8,7 +8,7 @@ from aircheck.core.checks import (
     check_for_empty_dag,
 )
 from aircheck.core.load import load_dags
-from aircheck.core.utils import get_dag_modules
+from aircheck.core.utils import concat_errors, get_dag_modules
 
 
 def check_dags_integrity(
@@ -32,7 +32,7 @@ def check_dags_integrity(
     dag_info = load_dags(dag_path=dag_path)
     if dag_info.import_errors:
         errors = [f"{err.file}: {err.msg}" for err in dag_info.import_errors]
-        err_msg = """\n""".join(errors)
+        err_msg = concat_errors(errors)
         return CheckResult(False, err_msg=err_msg)
 
     result = check_for_duplicated_dags(dag_info.dag_ids)
@@ -56,6 +56,6 @@ def check_dags_integrity(
                 errors.append(result.err_msg)
 
     if errors:
-        result = CheckResult(check_successful=False, err_msg="""\n""".join(errors))
+        result = CheckResult(check_successful=False, err_msg=concat_errors(errors))
 
     return result

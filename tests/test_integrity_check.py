@@ -23,27 +23,50 @@ class TestCheckDagsIntegrity:
         )
 
     def test_correct_dags(self, dag_path: Path):
-        assert self._run_integrity(
-            dag_path, "correct_dags.py", prefix="ABC"
-        ).check_successful
+        result = self._run_integrity(dag_path, "correct_dags.py", prefix="ABC")
+
+        assert result.check_successful
+
+        assert result.err_msg is None
 
     def test_incorrect_prefix(self, dag_path):
-        assert not self._run_integrity(
-            dag_path, "invalid_id_dags.py", prefix="ABC"
-        ).check_successful
+        result = self._run_integrity(dag_path, "invalid_id_dags.py", prefix="ABC")
+
+        assert not result.check_successful
+
+        assert "does not include required prefix 'ABC'" in result.err_msg
 
     def test_empty_dags(self, dag_path):
-        assert not self._run_integrity(dag_path, "empty_dags.py").check_successful
+        result = self._run_integrity(dag_path, "empty_dags.py")
+
+        assert not result.check_successful
+
+        assert "DAG 'empty_dag1' must have at least one task" in result.err_msg
 
     @pytest.mark.skipif(
         sys.platform == "win32",
         reason="Windows is anyway not supported and it behaves strangely",
     )
     def test_duplicated_dags(self, dag_path):
-        assert not self._run_integrity(dag_path, "duplicated_dags.py").check_successful
+        result = self._run_integrity(dag_path, "duplicated_dags.py")
+
+        assert not result.check_successful
+
+        assert "DAG 'duplicate_dag' has duplicates" in result.err_msg
 
     def test_cycle_dags(self, dag_path):
-        assert not self._run_integrity(dag_path, "cycle_dags.py").check_successful
+        result = self._run_integrity(dag_path, "cycle_dags.py")
+
+        assert not result.check_successful
+
+        assert (
+            "AirflowDagCycleException: Cycle detected in DAG: cycle_dag."
+            in result.err_msg
+        )
 
     def test_dangling_tasks(self, dag_path):
-        assert not self._run_integrity(dag_path, "dangling_tasks.py").check_successful
+        result = self._run_integrity(dag_path, "dangling_tasks.py")
+
+        assert not result.check_successful
+
+        assert "Dangling task" in result.err_msg

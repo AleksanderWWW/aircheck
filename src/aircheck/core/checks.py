@@ -8,6 +8,8 @@ __all__ = (
 
 from typing import TYPE_CHECKING, NamedTuple
 
+from aircheck.core.utils import concat_errors
+
 if TYPE_CHECKING:
     from airflow.models import DAG
 
@@ -28,7 +30,7 @@ def check_for_duplicated_dags(dag_ids: list[str]) -> CheckResult:
         seen.add(dag)
 
     if errors:
-        return CheckResult(check_successful=False, err_msg="""\n""".join(errors))
+        return CheckResult(check_successful=False, err_msg=concat_errors(errors))
 
     return CheckResult(check_successful=True)
 
