@@ -21,8 +21,11 @@ with DAG(
     schedule="@daily",
     catchup=False,
 ) as dag1:
-    Variable.get("env")
-    start = EmptyOperator(task_id="start")
+    env = Variable.get("env", "dev")
+
+    start_task_prefix = {"dev": "DEV_ENV_"}[env]
+
+    start = EmptyOperator(task_id=start_task_prefix + "start")
 
     def print_hello():
         print("Hello from DAG 1!")

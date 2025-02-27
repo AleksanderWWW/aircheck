@@ -1,7 +1,7 @@
 import dataclasses
-from unittest.mock import patch
 
-from airflow.models import DAG, DagBag, Variable
+from airflow.models import DAG, DagBag
+from airflow.models.variable import log as airflow_variable_log
 
 
 @dataclasses.dataclass
@@ -19,9 +19,9 @@ class DAGInfo:
 
 def load_dags(dag_path: str) -> DAGInfo:
     DagBag.logger().disabled = True
+    airflow_variable_log.disabled = True
 
-    with patch.object(Variable, "get"):
-        dagbag = DagBag(dag_folder=dag_path, include_examples=False, safe_mode=True)
+    dagbag = DagBag(dag_folder=dag_path, include_examples=False, safe_mode=True)
 
     if dagbag.import_errors:
         import_errors = []
